@@ -9,7 +9,6 @@ const { getAuthUser } = require('./utils');
 const app = express();
 app.use(express.json());
 
-// 1. Register
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -20,8 +19,6 @@ app.post('/register', async (req, res) => {
     res.status(400).json({ error: 'User exists or invalid input' });
   }
 });
-
-// 2. Fund Account
 app.post('/fund', async (req, res) => {
   const user = await getAuthUser(req);
   if (!user) return res.status(401).json({ error: 'Unauthorized' });
@@ -35,7 +32,6 @@ app.post('/fund', async (req, res) => {
   res.json({ balance: newBal });
 });
 
-// 3. Pay Another User
 app.post('/pay', async (req, res) => {
   const sender = await getAuthUser(req);
   if (!sender) return res.status(401).json({ error: 'Unauthorized' });
@@ -59,7 +55,7 @@ app.post('/pay', async (req, res) => {
   res.json({ balance: senderNewBal });
 });
 
-// 4. Check Balance API
+
 app.get('/bal', async (req, res) => {
   const user = await getAuthUser(req);
   if (!user) return res.status(401).json({ error: 'Unauthorized' });
@@ -85,7 +81,6 @@ app.get('/bal', async (req, res) => {
   }
 });
 
-// 5. View Transaction History
 app.get('/stmt', async (req, res) => {
   const user = await getAuthUser(req);
   if (!user) return res.status(401).json({ error: 'Unauthorized' });
@@ -96,8 +91,6 @@ app.get('/stmt', async (req, res) => {
   );
   res.json(rows);
 });
-
-// 6. Add Product
 app.post('/product', async (req, res) => {
   const user = await getAuthUser(req);
   if (!user) return res.status(401).json({ error: 'Unauthorized' });
@@ -111,13 +104,10 @@ app.post('/product', async (req, res) => {
   }
 });
 
-// 7. List All Products
 app.get('/product', async (req, res) => {
   const [rows] = await db.query('SELECT * FROM products');
   res.json(rows);
 });
-
-// 8. Buy a Product
 app.post('/buy', async (req, res) => {
   const user = await getAuthUser(req);
   if (!user) return res.status(401).json({ error: 'Unauthorized' });
